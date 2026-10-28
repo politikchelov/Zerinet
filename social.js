@@ -110,7 +110,8 @@
 
   function renderNav() {
     document.getElementById("znav")?.remove();
-    if (!S.enabled) return;
+    // Keep the account entry visible even if the initial /social/me request fails.
+    // This lets users reach the auth dialog and see the actual server error instead of hiding login entirely.
     const u = S.user;
     const nav = el(`<nav id="znav">
       <a href="#/chat">Чат</a><a href="#/top">Топ</a>
