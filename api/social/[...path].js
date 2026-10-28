@@ -24,7 +24,8 @@ const json = (res, status, data, extra = {}) => {
 };
 function config() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+  // Prefer the Supabase integration-managed secret key; a manually added legacy key may be stale.
+  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase server environment variables are not configured");
   return { url: url.replace(/\/$/, ""), key };
 }
