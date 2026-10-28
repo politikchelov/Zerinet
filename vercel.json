@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/social/:path*", "destination": "/api/social/:path*" },
     { "source": "/kodik/:action", "destination": "/api/kodik-proxy?action=:action" },
     { "source": "/api/:path*", "destination": "https://aniliberty.top/api/v1/:path*" }
   ]
