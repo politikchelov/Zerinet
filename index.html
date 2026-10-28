@@ -225,7 +225,7 @@ const toList = (json) => Array.isArray(json) ? json : (Array.isArray(json?.data)
 const unwrap = (json) => (json && typeof json === "object" && !Array.isArray(json) && json.data && typeof json.data === "object" && !Array.isArray(json.data)) ? json.data : json;
 
 /* ---------- API ---------- */
-const bases = location.protocol === "file:" ? [CONFIG.directApi, ...CONFIG.mirrors] : ["/api", CONFIG.directApi, ...CONFIG.mirrors];
+const bases = location.protocol === "file:" ? [CONFIG.directApi, ...CONFIG.mirrors] : ["/aniapi", CONFIG.directApi, ...CONFIG.mirrors];
 let workingBase;
 async function api(path, signal) {
   const order = workingBase ? [workingBase, ...bases.filter((b) => b !== workingBase)] : bases;
