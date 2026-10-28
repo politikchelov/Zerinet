@@ -25,7 +25,7 @@ const json = (res, status, data, extra = {}) => {
 function config() {
   // Vercel has two Supabase integration stores. The treider-prefixed key is tried first
   // against the explicitly configured Zerinet project URL; fallback keys may belong to another project.
-  const url = process.env.ZERINET_SUPABASE_URL || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.treider_SUPABASE_URL || process.env.ZERINET_SUPABASE_URL || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.treider_SUPABASE_SECRET_KEY || process.env.ZERINET_SUPABASE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase server environment variables are not configured");
   return { url: url.replace(/\/$/, ""), key };
