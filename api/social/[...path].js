@@ -23,9 +23,9 @@ const json = (res, status, data, extra = {}) => {
   res.end(JSON.stringify(data));
 };
 function config() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.ZERINET_SUPABASE_URL || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   // Prefer the Supabase integration-managed secret key; a manually added legacy key may be stale.
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.ZERINET_SUPABASE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase server environment variables are not configured");
   return { url: url.replace(/\/$/, ""), key };
 }
@@ -42,7 +42,9 @@ async function db(table, method = "GET", query = "", body, prefer) {
   try { data = text ? JSON.parse(text) : null; } catch {}
   if (!r.ok) {
     const e = new Error(data?.message || "Database request failed");
-    e.status = r.status; throw e;
+    e.status = r.status; e.code = data?.code; e.details = data?.details; e.hint = data?.hint;
+    console.error("Zerinet Supabase REST error", { table, status: r.status, code: e.code, message: e.message, details: e.details, hint: e.hint });
+    throw e;
   }
   return data;
 }
