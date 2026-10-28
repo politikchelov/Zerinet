@@ -96,7 +96,11 @@ async function handle(req, res) {
   if (typeof data === "string") { try { data = JSON.parse(data || "{}"); } catch { return json(res,400,{error:"Плохой JSON"}); } }
   if (!data || typeof data !== "object" || Array.isArray(data)) data = {};
   const url = new URL(req.url, "https://zerinet.vercel.app");
-  const path = "/" + (url.searchParams.get("path") || url.pathname.replace(/^\/api\/social\/?/, ""));
+  // Vercel rewrites can expose either the destination path or the original path.
+  // Normalize both /api/social/* and /social/* so every endpoint reaches the same handler.
+  const rawPath = url.searchParams.get("path") || url.pathname;
+  const normalizedPath = rawPath.replace(/^\/(?:api\/social|social)\/?/, "").replace(/^\/+/, "");
+  const path = "/" + normalizedPath;
   try {
     if (req.method === "GET" && path === "/me") {
       const u = await currentUser(req);
