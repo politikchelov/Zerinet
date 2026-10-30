@@ -949,7 +949,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_FILES = {"/": "index.html", "/index.html": "index.html", "/social.js": "social.js"}
 MAX_BODY = 400_000
 
-# Токен Kodik: переменная окружения KODIK_TOKEN или файл kodik_token.txt рядом с server.py.
+# Kodik credentials are read from the server environment only.
 KODIK_API = os.environ.get("KODIK_API", "https://kodik-api.com").rstrip("/")
 KODIK_ALLOWED = {"title", "shikimori_id", "with_material_data", "types", "limit", "strict", "year"}
 
