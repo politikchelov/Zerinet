@@ -942,7 +942,7 @@ HOST = os.environ.get("HOST", "127.0.0.1")           # для интернета
 TRUST_PROXY = os.environ.get("TRUST_PROXY") == "1"   # за nginx/Caddy/Render: брать IP из X-Forwarded-For
 UPSTREAMS = os.environ.get(
     "UPSTREAMS",
-    "https://aniliberty.top/api/v1,https://anilibria.top/api/v1,https://api.anilibria.app/api/v1",
+    "https://anilibria.top/api/v1,https://api.anilibria.app/api/v1",
 ).split(",")
 ROOT = os.path.dirname(os.path.abspath(__file__))
 # отдаём наружу ТОЛЬКО эти файлы (токен, база данных и код сервера недоступны по адресу)
@@ -993,6 +993,10 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        # Same-origin proxy used by the browser. Keeps API calls away from CORS
+        # restrictions and centralizes the official AniLibria v1 mirrors.
+        if path.startswith("/aniapi/"):
+            return self.proxy(self.path[len("/aniapi"):])
         if path.startswith("/api/"):
             return self.proxy(self.path[len("/api"):])
         if path.startswith("/kodik/"):
