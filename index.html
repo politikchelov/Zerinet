@@ -195,9 +195,9 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none
 /* ---------- настройки (меняй под себя) ---------- */
 const CONFIG = {
   siteName: "ZERINET",
-  directApi: "https://aniliberty.top/api/v1",   // запросы напрямую из браузера, если нет прокси /api
-  mirrors: ["https://anilibria.top/api/v1", "https://api.anilibria.app/api/v1"],
-  imageBase: "https://aniliberty.top",           // откуда грузить обложки с относительными путями
+  directApi: "https://anilibria.top/api/v1",   // официальный основной API v1
+  mirrors: ["https://api.anilibria.app/api/v1"], // официальное зеркало API v1
+  imageBase: "https://anilibria.top",            // база относительных путей изображений
   hlsScript: "https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js",
   homePaths: [                                   // пробуем по очереди, берём первый рабочий
     "/anime/releases/latest?limit=24",
