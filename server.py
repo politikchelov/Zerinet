@@ -955,14 +955,8 @@ KODIK_ALLOWED = {"title", "shikimori_id", "with_material_data", "types", "limit"
 
 
 def read_kodik_token():
-    token = os.environ.get("KODIK_TOKEN", "").strip()
-    if token:
-        return token
-    try:
-        with open(os.path.join(ROOT, "kodik_token.txt"), encoding="utf-8-sig") as file:
-            return file.read().strip()
-    except OSError:
-        return ""
+    # Credentials are environment-only. Never read secrets from tracked files.
+    return os.environ.get("KODIK_TOKEN", "").strip()
 
 
 KODIK_TOKEN = read_kodik_token()
