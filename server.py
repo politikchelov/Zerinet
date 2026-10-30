@@ -942,27 +942,21 @@ HOST = os.environ.get("HOST", "127.0.0.1")           # для интернета
 TRUST_PROXY = os.environ.get("TRUST_PROXY") == "1"   # за nginx/Caddy/Render: брать IP из X-Forwarded-For
 UPSTREAMS = os.environ.get(
     "UPSTREAMS",
-    "https://aniliberty.top/api/v1,https://anilibria.top/api/v1,https://api.anilibria.app/api/v1",
+    "https://anilibria.top/api/v1,https://api.anilibria.app/api/v1",
 ).split(",")
 ROOT = os.path.dirname(os.path.abspath(__file__))
 # отдаём наружу ТОЛЬКО эти файлы (токен, база данных и код сервера недоступны по адресу)
 STATIC_FILES = {"/": "index.html", "/index.html": "index.html", "/social.js": "social.js"}
 MAX_BODY = 400_000
 
-# Токен Kodik: переменная окружения KODIK_TOKEN или файл kodik_token.txt рядом с server.py.
+# Kodik credentials are read from the server environment only.
 KODIK_API = os.environ.get("KODIK_API", "https://kodik-api.com").rstrip("/")
 KODIK_ALLOWED = {"title", "shikimori_id", "with_material_data", "types", "limit", "strict", "year"}
 
 
 def read_kodik_token():
-    token = os.environ.get("KODIK_TOKEN", "").strip()
-    if token:
-        return token
-    try:
-        with open(os.path.join(ROOT, "kodik_token.txt"), encoding="utf-8-sig") as file:
-            return file.read().strip()
-    except OSError:
-        return ""
+    # Credentials are environment-only. Never read secrets from tracked files.
+    return os.environ.get("KODIK_TOKEN", "").strip()
 
 
 KODIK_TOKEN = read_kodik_token()
@@ -993,6 +987,10 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        # Same-origin proxy used by the browser. Keeps API calls away from CORS
+        # restrictions and centralizes the official AniLibria v1 mirrors.
+        if path.startswith("/aniapi/"):
+            return self.proxy(self.path[len("/aniapi"):])
         if path.startswith("/api/"):
             return self.proxy(self.path[len("/api"):])
         if path.startswith("/kodik/"):
